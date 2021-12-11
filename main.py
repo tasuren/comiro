@@ -1,16 +1,17 @@
 # Comicker
 
-from traceback import print_exc
-
 from sanic.exceptions import SanicException
 from aiomysql import create_pool
 
 from asyncio import all_tasks, AbstractEventLoop
+from traceback import print_exc
 from ujson import load
 from sys import argv
 
-from backend import Sanic, Request, logger
+from backend import Sanic, Request, logger, DataManager
 from backend.utils import api
+
+from backend.api import bp as api_bp
 
 
 app = Sanic("comicker")
@@ -32,6 +33,7 @@ async def ping(request: Request):
 @app.listener("before_server_start")
 async def before_server_start(app: Sanic, loop: AbstractEventLoop):
     app.ctx.pool = await create_pool(1, 1000, loop=loop, **app.ctx.auth["mysql"])
+    app.ctx.data = DataManager(app.ctx.pool, loop)
 
 
 @app.listener("after_server_stop")
@@ -57,6 +59,9 @@ async def on_error(request: Request, exception: Exception):
         logger.error(f"Error on {request.path} : {exception}")
 
     return res
+
+
+app.blueprint(api_bp)
 
 
 app.run(**app.ctx.auth["app"])

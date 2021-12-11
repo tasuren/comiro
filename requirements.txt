@@ -1,2 +1,4 @@
 sanic
 aiomysql
+aiohttp
+bs4
