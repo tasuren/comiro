@@ -3,13 +3,14 @@
 from traceback import print_exc
 
 from sanic.exceptions import SanicException
+from aiomysql import create_pool
 
-from asyncio import all_tasks
+from asyncio import all_tasks, AbstractEventLoop
 from ujson import load
 from sys import argv
 
-from .__init__ import Sanic, Request, logger
-from .__init__.utils import api
+from backend import Sanic, Request, logger
+from backend.utils import api
 
 
 app = Sanic("comicker")
@@ -26,6 +27,17 @@ async def ping(request: Request):
             "tasks": len(all_tasks())
         }
     )
+
+
+@app.listener("before_server_start")
+async def before_server_start(app: Sanic, loop: AbstractEventLoop):
+    app.ctx.pool = await create_pool(1, 1000, loop=loop, **app.ctx.auth["mysql"])
+
+
+@app.listener("after_server_stop")
+async def after_server_stop(app: Sanic, _: AbstractEventLoop):
+    app.ctx.pool.close()
+    await app.ctx.pool.wait_closed()
 
 
 @app.exception(Exception)
@@ -47,4 +59,4 @@ async def on_error(request: Request, exception: Exception):
     return res
 
 
-app.run()
+app.run(**app.ctx.auth["app"])
