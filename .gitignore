@@ -1,2 +1,4 @@
-/target
 *.*-workspace
+__pycache__
+auth.json
+.vscode
