@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+{% block title %}Comicker - クレジット{% endblock %}
+{% block body %}
+{% filter markdown %}
+# クレジット
+## 開発者
+名前：tasuren  
+年齢：高校生  
+Discord:tasuren#5161
+## ウェブサービス詳細
+### バックエンド
+言語：Python (実装：CPython)  
+ウェブフレームワーク：Sanic  
+データベース：MySQL
+### フロントエンド
+言語：Python (実装：Brython)
+{% endfilter %}
+{% endblock %}

@@ -9,7 +9,7 @@ from ujson import load
 from sys import argv
 
 from backend import Sanic, Request, logger, DataManager
-from backend.utils import api
+from backend.utils import api, add_cors_headers
 
 from backend.api import bp as api_bp
 
@@ -46,12 +46,13 @@ async def after_server_stop(app: Sanic, _: AbstractEventLoop):
 async def on_error(request: Request, exception: Exception):
     # 発生したエラーは辞書に直す。
     status = 200
+    name = f"{e.__name__}: {exception}"
     if isinstance(exception, SanicException):
         status = exception.status_code
-        res = api(str(exception), None, exception.status_code)
+        res = api(name, None, exception.status_code)
     else:
         status = 500
-        res = api(str(exception), None, 500)
+        res = api(name, None, 500)
         print_exc()
 
     if status in (500, 501):
@@ -62,6 +63,7 @@ async def on_error(request: Request, exception: Exception):
 
 
 app.blueprint(api_bp)
+app.register_middleware(add_cors_headers, "response")
 
 
 app.run(**app.ctx.auth["app"])

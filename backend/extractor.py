@@ -16,9 +16,10 @@ class ImageData(TypedDict):
 class Comic(TypedDict):
     images: DefaultDict[str, List[ImageData]]
     title: str
+    url: str
 
 
-async def extract(url: str, headers: Optional[dict] = None) -> Tuple[Comic, str]:
+async def extract(url: str, headers: Optional[dict] = None) -> Comic:
     "渡されたURLにある画像を取り出します。"
     async with ClientSession() as session:
         async with session.get(url, headers=headers or HEADERS) as r:
@@ -32,7 +33,7 @@ async def extract(url: str, headers: Optional[dict] = None) -> Tuple[Comic, str]
                 {"alt": img.get("alt", img["src"]), "url": img["src"]}
             )
     title = soup.find("title")
-    return {"title": title.text if title else url, "images": images}, url
+    return {"title": title.text if title else url, "images": images, "url": url}
 
 
 if __name__ == "__main__":

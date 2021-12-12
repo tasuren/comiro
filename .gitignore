@@ -4,3 +4,5 @@ auth.json
 .vscode
 *.html
 !layout.html
+brython
+.DS_Store

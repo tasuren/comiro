@@ -34,20 +34,20 @@ class DataManager:
 
     async def set(self, url: str) -> Comic:
         "データベースに渡されたURLにある漫画の画像を追加します。"
-        data, url = await extract(url)
+        data = await extract(url)
         dumped = dumps(data["images"], ensure_ascii=True)
         async with self.pool.acquire() as conn:
             async with conn.cursor() as cursor:
-                if await self._get(cursor, url):
+                if await self._get(cursor, data["url"]):
                     await cursor.execute(
                         f"""UPDATE {self.TABLES[0]} SET Title = %s, Images = %s
                             WHERE Url = %s;""",
-                        (data["title"], dumped, url)
+                        (data["title"], dumped, data["url"])
                     )
                 else:
                     await cursor.execute(
                         f"INSERT INTO {self.TABLES[0]} VALUES (%s, %s, %s);",
-                        (url, data["title"], dumped)
+                        (data["url"], data["title"], dumped)
                     )
         del dumped
         return data
@@ -57,7 +57,7 @@ class DataManager:
         if row:
             if len(row) == 3:
                 row = row[1:]
-            return {"title": row[0], "images": loads(row[1])}
+            return {"url": row[0], "title": row[1], "images": loads(row[2])}
 
     async def _get(self, cursor, url):
         await cursor.execute(
@@ -66,7 +66,7 @@ class DataManager:
         )
         return await cursor.fetchone()
 
-    async def get(self, urls: List[str]) -> List[Union[Comic, Tuple[str, int]]]:
+    async def get(self, urls: List[str]) -> List[Comic]:
         "渡されたURLの漫画データを取得します。"
         async with self.pool.acquire() as conn:
             async with conn.cursor() as cursor:
