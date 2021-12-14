@@ -55,13 +55,11 @@ class DataManager:
     def comic_from_json(self, row: Sequence) -> Optional[Comic]:
         "渡された行から漫画データを作ります。"
         if row:
-            if len(row) == 3:
-                row = row[1:]
             return {"url": row[0], "title": row[1], "images": loads(row[2])}
 
     async def _get(self, cursor, url):
         await cursor.execute(
-            f"SELECT Title, Images FROM {self.TABLES[0]} WHERE Url = %s;",
+            f"SELECT Url, Title, Images FROM {self.TABLES[0]} WHERE Url = %s;",
             (url,)
         )
         return await cursor.fetchone()
@@ -70,10 +68,12 @@ class DataManager:
         "渡されたURLの漫画データを取得します。"
         async with self.pool.acquire() as conn:
             async with conn.cursor() as cursor:
-                return [
-                    self.comic_from_json(await self._get(cursor, url))
-                    for url in urls if url
-                ]
+                return list(filter(
+                    lambda data: data is not None, [
+                        self.comic_from_json(await self._get(cursor, url))
+                        for url in urls if url
+                    ]
+                ))
 
     async def search(self, word: str, offset: int, limit: int = 10) -> List[Comic]:
         "検索を行います。"

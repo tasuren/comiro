@@ -6,8 +6,8 @@ from browser import document, html
 def make_button(href, href2):
     return html.A(
         "見る", href=href, Class="btn btn-primary"
-    ) + html.A(
-        "元ページに行く", href=href2, Class="btn btn-primary"
+    ) + " " + html.A(
+        "元ページに行く", href=href2, Class="btn btn-secondary"
     )
 
 
@@ -16,7 +16,10 @@ def get_card(title, make, close, *args):
     return html.DIV(
         html.DIV(
             (
-                title + html.BUTTON(type="button", Class="btn-close")
+                title + html.BUTTON(
+                    type="button", Class="btn-close btn-close-white",
+                    **{"aria-label": "Close"}
+                )
                 if close else title
             ),
             Class="card-header"
@@ -24,7 +27,7 @@ def get_card(title, make, close, *args):
             make(*args),
             Class="card-body"
         ),
-        Class="card"
+        Class="card text-white bg-dark"
     )
 
 
@@ -32,7 +35,7 @@ def get_bookshelf(datas, close=True):
     row = html.DIV(Class="row")
     before = ""
     for data in sorted(datas, key=lambda x: x["title"] or x["url"]):
-        if (now := data["title"] or data["url"])[0] != before:
+        if (now := (data["title"] or data["url"])[0]) != before:
             before = now
             row <= html.H3(f"{before}行")
         row <= html.DIV(

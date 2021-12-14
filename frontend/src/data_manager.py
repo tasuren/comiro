@@ -1,7 +1,7 @@
 # Comicker Frontend - Data Manager
 
 from browser.local_storage import storage
-from browser import ajax
+from browser import ajax, alert
 
 from json import loads, dumps
 
@@ -9,7 +9,7 @@ from src.constants import URL
 
 
 def get(urls, callback, **kwargs):
-    ajax.get(
+    ajax.post(
         f"{URL}/get", mode="json", data=",- -,".join(urls),
         oncomplete=callback, **kwargs
     )
@@ -21,10 +21,6 @@ def set_(url, callback, **kwargs):
     )
 
 
-class Error(Exception):
-    ...
-
-
 class DataManager:
     def __init__(self):
         self.urls = [
@@ -32,8 +28,16 @@ class DataManager:
         ]
         self.comics = []
         def on_load(response):
-            for comic in response.json:
-                self.comics.append(comic)
+            data = response.json
+            if data["status"] == 500:
+                alert(
+                    "エラーが発生しました。\n"
+                    "もしこれが何度も表示され異常だと思った場合は、クレジットページにあるメールまたはDiscordから報告してください。\n"
+                    f"また、もしかしたらデータ消去で治る可能性もあります。\nコード：{data}"
+                )
+            else:
+                for comic in data["data"]:
+                    self.comics.append(comic)
         get(self.urls, on_load, blocking=True)
 
     def set_comic(self, response):
@@ -44,15 +48,16 @@ class DataManager:
             for index in range(len(self.comics)):
                 if self.comics[index]["url"] == data["url"]:
                     del self.comics[index]
-            self.comics.append(data)
+            self.comics.append(data["data"])
 
     def set(self, url):
-        if url not in self.urls:
-            self.urls.append(url)
-            self.save()
         set_(url, self.set_comic, blocking=True)
         data = self.comics[-1]
-        if "url" not in self.comics:
+        if "url" in data:
+            if url not in self.urls:
+                self.urls.append(url)
+                self.save()
+        else:
             del self.comics[-1]
         return data
 

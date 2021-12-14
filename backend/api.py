@@ -18,7 +18,7 @@ async def set_(request: Request):
     "新しく漫画を登録します。"
     try:
         return api(
-            "Created", await request.app.ctx.data.set(str(request.body)), 201
+            "Created", await request.app.ctx.data.set(request.body.decode()), 201
         )
     except ClientResponseError as e:
         return api(
@@ -30,11 +30,11 @@ async def set_(request: Request):
         return api("Error", {"code": "InvalidURL"}, 400)
 
 
-@bp.get("/get")
+@bp.route("/get", methods=("GET", "POST"))
 @CoolDown(5, 5)
 async def get(request: Request):
     "渡された複数のURLのデータを取得します。"
-    return api("OK", await request.app.ctx.data.get(str(request.body).split(",- -,")))
+    return api("OK", await request.app.ctx.data.get(request.body.decode().split(",- -,")))
 
 
 @bp.get("/search/<offset:int>/<word>")

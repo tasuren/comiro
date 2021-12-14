@@ -46,13 +46,13 @@ async def after_server_stop(app: Sanic, _: AbstractEventLoop):
 async def on_error(request: Request, exception: Exception):
     # 発生したエラーは辞書に直す。
     status = 200
-    name = f"{e.__name__}: {exception}"
+    name = f"{exception.__class__.__name__}: {exception}"
     if isinstance(exception, SanicException):
         status = exception.status_code
-        res = api(name, None, exception.status_code)
+        res = api("Error", name, exception.status_code)
     else:
         status = 500
-        res = api(name, None, 500)
+        res = api("Error", name, 500)
         print_exc()
 
     if status in (500, 501):

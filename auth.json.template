@@ -1,5 +1,9 @@
 {
     "app": {
-        "host": "0.0.0.0", "port": 801
+        "host": "Web Server Host", "port": // Web Server Port
+    },
+    "mysql": {
+        "user": "MySQL User Name", "password": "MySQL User Password",
+        "port": // MySQL Port, "db": "MySQL Database DB Name", "autocommit": true
     }
 }

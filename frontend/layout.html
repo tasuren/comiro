@@ -38,6 +38,7 @@
                 <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
                   <li><a class="dropdown-item" href="#"><i class="bi bi-arrow-bar-up"></i> データエクスポート</a></li>
                   <li><a class="dropdown-item" href="#"><i class="bi bi-arrow-bar-down"></i> データインポート</a></li>
+                  <li><a class="dropdown-item" href="/bookshelf.html?clear=data"><i class="bi bi-trash"></i> データクリア</a></li>
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="/credit.html"><i class="bi bi-info-square"></i> クレジット</a></li>
                 </ul>
@@ -55,12 +56,6 @@
       <br>
       {% block body %}{% endblock %}
     </main>
-    <script>
-      function addDarkmodeWidget() {
-        const darkmode = new Darkmode({mixColor: '#f0f0f0', label: '🌓'});
-        darkmode.showWidget();
-      }
-      window.addEventListener('load', addDarkmodeWidget);
-    </script>
+    <div class="container" id="sub"></div>
   </body>
 </html>
