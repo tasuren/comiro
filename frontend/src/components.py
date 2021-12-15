@@ -7,7 +7,7 @@ def make_button(href, href2):
     return html.A(
         "見る", href=href, Class="btn btn-primary"
     ) + " " + html.A(
-        "元ページに行く", href=href2, Class="btn btn-secondary"
+        "元ページに行く", href=href2, Class="btn btn-secondary", id=href2
     )
 
 
@@ -18,7 +18,7 @@ def get_card(title, make, close, *args):
             (
                 title + html.BUTTON(
                     type="button", Class="btn-close btn-close-white",
-                    **{"aria-label": "Close"}
+                    id=args[1], **{"aria-label": "Close"}
                 )
                 if close else title
             ),
@@ -31,17 +31,28 @@ def get_card(title, make, close, *args):
     )
 
 
+TITLE_BRACKETS = (("【", "】"), ("〔", "〕"))
+def get_name(title):
+    for before, after in TITLE_BRACKETS:
+        if title.startswith(before) and after in title:
+            title = title[title.find(after) + 1:]
+    return title
+
+
 def get_bookshelf(datas, close=True):
     row = html.DIV(Class="row")
     before = ""
-    for data in sorted(datas, key=lambda x: x["title"] or x["url"]):
-        if (now := (data["title"] or data["url"])[0]) != before:
+    for title, data in sorted(
+        map(lambda x: (get_name(x["title"] or x["url"]), x), datas),
+        key=lambda x: x[0]
+    ):
+        if (now := title[0]) != before:
             before = now
             row <= html.H3(f"{before}行")
         row <= html.DIV(
             get_card(
                 data["title"], make_button, close,
-                f"/bookshelf.html?target={data['url']}",
+                f"/bookshelf.html?view={data['url']}",
                 data["url"]
             ), Class="col-sm-6"
         )

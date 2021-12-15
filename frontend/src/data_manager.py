@@ -45,10 +45,11 @@ class DataManager:
         if data["message"] == "Error":
             self.comics.append(data)
         else:
+            data = data["data"]
             for index in range(len(self.comics)):
                 if self.comics[index]["url"] == data["url"]:
                     del self.comics[index]
-            self.comics.append(data["data"])
+            self.comics.append(data)
 
     def set(self, url):
         set_(url, self.set_comic, blocking=True)
@@ -69,3 +70,7 @@ class DataManager:
 
     def save(self):
         storage["urls"] = dumps(self.urls)
+
+
+def get_category(category):
+    return "未分類" if category == "__nothing__" else category
