@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <title>Comicker - 本棚</title>
+    <meta name="description" content="漫画サイトビュアー、ウェブサイトにある画像を抜き出します。">
+    <meta name="keywords" content="漫画, エロ漫画, 画像">
+    <meta name="author" content="tasuren">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+    
+<script src="/brython/brython.js"></script>
+<script src="/brython/brython_stdlib.js"></script>
+
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body onload="brython()">
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">Comicker</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/"><i class="bi bi-house"></i> ホーム</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/bookshelf.html"><i class="bi bi-book"></i> 本棚</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-at"></i> その他
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="/port.html"><i class="bi bi-file-earmark-medical"></i> データ管理</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="https://discord.gg/kfMwZUyGFG"><i class="bi bi-discord"></i> Discord</a></li>
+                  <li><a class="dropdown-item" href="/credit.html"><i class="bi bi-info-square"></i> クレジット</a></li>
+                </ul>
+              </li>
+            </ul>
+            <form action="/bookshelf.html" method="get" class="d-flex">
+              <input class="form-control me-2" type="search" name="query" placeholder="Search (実装予定)" aria-label="Search" disabled>
+              <button class="btn btn-outline-success" type="submit" disabled>Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main class="container", id="main">
+      <br>
+      
+<h1>本棚</h1>
+ここでは自分の好きなウェブページを登録することができ、そのウェブページを画像のみで閲覧することが可能です。<br>
+シークレットモードだと正しく動作しない可能性があります。<br>
+また、ブラウザを変更する場合は<a href="port.html">データ管理]</a>に行ってください。<br>
+<form action="/bookshelf.html" method="GET" class="row g-3">
+  <label class="col-form-label">本の追加</label>
+  <div class="col-auto">
+    <input type="text" name="url" id="url" class="form-control" placeholder="URL" required>
+  </div>
+  <div class="col-auto">
+    <input type="submit" class="btn btn-dark mb-3" value="登録">
+  </div>
+</form>
+<hr></hr>
+<div class="sk-cube-grid" id="loading_first">
+  <div class="sk-cube sk-cube1 btn-dark"></div>
+  <div class="sk-cube sk-cube2 btn-dark"></div>
+  <div class="sk-cube sk-cube3 btn-dark"></div>
+  <div class="sk-cube sk-cube4 btn-dark"></div>
+  <div class="sk-cube sk-cube5 btn-dark"></div>
+  <div class="sk-cube sk-cube6 btn-dark"></div>
+  <div class="sk-cube sk-cube7 btn-dark"></div>
+  <div class="sk-cube sk-cube8 btn-dark"></div>
+  <div class="sk-cube sk-cube9 btn-dark"></div>
+</div>
+<script type="text/python" src="/src/main.py"></script>
+
+    </main>
+    <div class="container" id="sub"></div>
+  </body>
+</html>

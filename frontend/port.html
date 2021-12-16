@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <title>Comicker - データ エクスポート/インポート</title>
+    <meta name="description" content="漫画サイトビュアー、ウェブサイトにある画像を抜き出します。">
+    <meta name="keywords" content="漫画, エロ漫画, 画像">
+    <meta name="author" content="tasuren">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+    
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body onload="brython()">
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">Comicker</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/"><i class="bi bi-house"></i> ホーム</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/bookshelf.html"><i class="bi bi-book"></i> 本棚</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bi bi-at"></i> その他
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                  <li><a class="dropdown-item" href="/port.html"><i class="bi bi-file-earmark-medical"></i> データ管理</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="https://discord.gg/kfMwZUyGFG"><i class="bi bi-discord"></i> Discord</a></li>
+                  <li><a class="dropdown-item" href="/credit.html"><i class="bi bi-info-square"></i> クレジット</a></li>
+                </ul>
+              </li>
+            </ul>
+            <form action="/bookshelf.html" method="get" class="d-flex">
+              <input class="form-control me-2" type="search" name="query" placeholder="Search (実装予定)" aria-label="Search" disabled>
+              <button class="btn btn-outline-success" type="submit" disabled>Search</button>
+            </form>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main class="container", id="main">
+      <br>
+      
+<h1>データ管理</h1>
+ここではブラウザに保存されたウェブサイトの画像データの管理をすることができます。
+<h2>エクスポート/インポート</h2>
+ブラウザに保存した本リストのデータをエクスポート(ダウンロード)することができます。<br>
+そしてエクスポートしたデータをインポートすることでそのデータを読み込むことができます。<br>
+ブラウザの変更時や他の端末への移行時に使用してください。<br>
+ですので、これを使うことでバックアップをすることも可能です。
+<h3>エクスポート</h3>
+<button class="btn btn-secondary" onclick="exportData(this)">エクスポートをする。</button>
+<a id="download" href="..." download="data.cmk" hidden="true"></a>
+<br><br>
+<h3>インポート</h3>
+<label for="upload" class="form-label">以下からファイルを選択してください。</label>
+<input class="form-control" id="upload" type="file" onchange="uploadData(this)" accept=".cmk" multiple><br>
+<h2>データ消去</h2>
+全てのデータを消去します。<br><br>
+<a href="/bookshelf.html?clear=data" class="btn btn-danger">消去ページへ進む。</a>
+<script type="text/javascript">
+function exportData(input) {
+  const data = localStorage.getItem("urls");
+  if (!data) {
+    alert("データは空です。");
+  } else {
+    var a = document.getElementById("download");
+    a.href = `data:application/octet-stream;charset=UTF-8,${encodeURIComponent(
+      data.split(",% %,").join("\n")
+    )}`;
+    if (a.href.length == 44) {
+      alert("データは空です。");
+    } else {
+      a.download = `data_${a.href.length}.cmk`;
+      a.click();
+    }
+  }
+}
+
+function uploadData(input) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    localStorage.setItem("urls", reader.result.split(/\r\n|\n|\r/).join(",% %,"));
+    alert("データの読み込みに成功しました。");
+  }
+  reader.readAsText(input.files[0]);
+}
+</script>
+
+    </main>
+    <div class="container" id="sub"></div>
+  </body>
+</html>
