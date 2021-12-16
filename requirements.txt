@@ -1,4 +1,8 @@
+# Backend
 sanic
 aiomysql
 aiohttp
 bs4
+# Frontend (Compile jinja2)
+jinja2
+flask-misaka
