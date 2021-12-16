@@ -3,6 +3,8 @@
 from browser import document, alert, window, html
 from browser.local_storage import storage
 
+from urllib.parse import unquote
+
 from src.data_manager import DataManager, get_category
 from src import components
 
@@ -10,7 +12,7 @@ from src import components
 data = DataManager()
 if (url := document.query.getvalue("view")):
     for comic in data.comics:
-        if comic["url"] == url:
+        if unquote(comic["url"]) == url:
             components.remove_loading("loading_first")
             del document["main"]
             document["sub"] <= html.H1(comic["title"] or comic["url"])

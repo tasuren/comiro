@@ -1,6 +1,6 @@
 # Comicker - Data Manager
 
-from typing import Union, Optional, Sequence, Tuple, List
+from typing import Optional, Sequence, List
 
 from asyncio import AbstractEventLoop
 from aiomysql import Pool
@@ -38,16 +38,16 @@ class DataManager:
         dumped = dumps(data["images"], ensure_ascii=True)
         async with self.pool.acquire() as conn:
             async with conn.cursor() as cursor:
-                if await self._get(cursor, data["url"]):
+                if await self._get(cursor, url):
                     await cursor.execute(
                         f"""UPDATE {self.TABLES[0]} SET Title = %s, Images = %s
                             WHERE Url = %s;""",
-                        (data["title"], dumped, data["url"])
+                        (data["title"], dumped, url)
                     )
                 else:
                     await cursor.execute(
                         f"INSERT INTO {self.TABLES[0]} VALUES (%s, %s, %s);",
-                        (data["url"], data["title"], dumped)
+                        (url, data["title"], dumped)
                     )
         del dumped
         return data

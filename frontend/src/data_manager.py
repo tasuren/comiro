@@ -3,7 +3,7 @@
 from browser.local_storage import storage
 from browser import ajax, alert
 
-from json import loads, dumps
+from urllib.parse import unquote
 
 from src.constants import URL
 
@@ -23,8 +23,9 @@ def set_(url, callback, **kwargs):
 
 class DataManager:
     def __init__(self):
+        print(storage.get("urls"))
         self.urls = [
-            url for url in loads(storage.get("urls", "[]"))
+            url for url in storage.get("urls", "").split(",% %,")
         ]
         self.comics = []
         def on_load(response):
@@ -56,20 +57,21 @@ class DataManager:
         data = self.comics[-1]
         if "url" in data:
             if url not in self.urls:
-                self.urls.append(url)
+                self.urls.append(unquote(url))
                 self.save()
         else:
             del self.comics[-1]
         return data
 
     def remove(self, url):
-        if url in self.urls:
-            self.urls.remove(url)
-        if url in storage["urls"]:
-            self.save()
+        url = unquote(url)
+        for tentative in self.urls:
+            if unquote(tentative) == url:
+                self.urls.remove(tentative)
+        self.save()
 
     def save(self):
-        storage["urls"] = dumps(self.urls)
+        storage["urls"] = ",% %,".join(self.urls)
 
 
 def get_category(category):

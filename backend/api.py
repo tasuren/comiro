@@ -3,6 +3,7 @@
 from sanic import Blueprint
 
 from aiohttp import ClientResponseError, InvalidURL
+from urllib.parse import unquote
 
 from .utils import api, MaxConcurrency, CoolDown
 from . import Request
@@ -18,7 +19,7 @@ async def set_(request: Request):
     "新しく漫画を登録します。"
     try:
         return api(
-            "Created", await request.app.ctx.data.set(request.body.decode()), 201
+            "Created", await request.app.ctx.data.set(unquote(request.body.decode())), 201
         )
     except ClientResponseError as e:
         return api(
@@ -34,7 +35,13 @@ async def set_(request: Request):
 @CoolDown(5, 5)
 async def get(request: Request):
     "渡された複数のURLのデータを取得します。"
-    return api("OK", await request.app.ctx.data.get(request.body.decode().split(",- -,")))
+    return api(
+        "OK", await request.app.ctx.data.get(
+            list(map(
+                unquote, request.body.decode().split(",- -,")
+            ))
+        )
+    )
 
 
 @bp.get("/search/<offset:int>/<word>")

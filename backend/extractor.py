@@ -24,7 +24,6 @@ async def extract(url: str, headers: Optional[dict] = None) -> Comic:
     async with ClientSession() as session:
         async with session.get(url, headers=headers or HEADERS) as r:
             r.raise_for_status()
-            url = str(r.url)
             soup = BeautifulSoup(await r.text(), "html.parser")
     images = defaultdict(list)
     for img in soup.find_all("img"):
