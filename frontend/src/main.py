@@ -55,6 +55,8 @@ elif document.query.getvalue("clear", "none") == "data":
     document["sub"] <= html.H1("本棚データ削除")
     document["sub"] <= html.BUTTON("データを削除", id="clear", Class="btn btn-danger")
     document["clear"].bind("click", clear)
+elif (query := document.query.getvalue("query")):
+    ...
 else:
     components.remove_loading("loading_first")
     document["main"] <= components.get_bookshelf(data.comics)

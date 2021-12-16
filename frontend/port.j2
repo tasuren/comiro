@@ -26,7 +26,7 @@ function exportData(input) {
   } else {
     var a = document.getElementById("download");
     a.href = `data:application/octet-stream;charset=UTF-8,${encodeURIComponent(
-      JSON.parse(data).join("\n")
+      data.split(",% %,").join("\n")
     )}`;
     if (a.href.length == 44) {
       alert("データは空です。");
@@ -40,7 +40,7 @@ function exportData(input) {
 function uploadData(input) {
   const reader = new FileReader();
   reader.onload = () => {
-    localStorage.setItem("urls", JSON.stringify(reader.result.split(/\r\n|\n|\r/)));
+    localStorage.setItem("urls", reader.result.split(/\r\n|\n|\r/).join(",% %,"));
     alert("データの読み込みに成功しました。");
   }
   reader.readAsText(input.files[0]);

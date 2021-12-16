@@ -79,9 +79,12 @@ class DataManager:
         "検索を行います。"
         async with self.pool.acquire() as conn:
             async with conn.cursor() as cursor:
+                queries = word.split()
                 await cursor.execute(
-                    f"SELECT * FROM {self.TABLES[0]} WHERE word LIKE %s OFFSET %s LIMIT %s;",
-                    (word, offset, limit)
+                    f"""SELECT * FROM {self.TABLES[0]}
+                        WHERE {('Title LIKE %s AND '*len(queries))[:-5]}
+                        OFFSET %s LIMIT %s;""",
+                    queries + [offset, limit]
                 )
                 return [
                     self.comic_from_json(row)
