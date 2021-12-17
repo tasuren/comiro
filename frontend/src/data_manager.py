@@ -23,7 +23,6 @@ def set_(url, callback, **kwargs):
 
 class DataManager:
     def __init__(self):
-        print(storage.get("urls"))
         self.urls = [
             url for url in storage.get("urls", "").split(",% %,")
         ]
